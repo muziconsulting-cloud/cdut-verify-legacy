@@ -1,0 +1,22 @@
+{
+  "name": "cdut-verify",
+  "version": "0.1.0",
+  "description": "Offline verifier for CDU .cdut transcripts, with programme-manifest completeness checking",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "cdut-verify": "./src/cli.ts"
+  },
+  "scripts": {
+    "verify": "bun src/cli.ts",
+    "test": "bun test",
+    "test:baseline": "bun test test/transcript.test.ts",
+    "typecheck": "bun x tsc --noEmit -p ."
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
