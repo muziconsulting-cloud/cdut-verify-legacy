@@ -18,6 +18,7 @@
     "verify": "bun src/cli.ts",
     "test": "bun test",
     "test:baseline": "bun test test/transcript.test.ts",
+    "test:task": "bun test test/completeness.test.ts test/manifest.test.ts test/payload.test.ts test/verdict.test.ts test/revocation.test.ts",
     "typecheck": "bun x tsc --noEmit -p ."
   },
   "devDependencies": {

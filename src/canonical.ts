@@ -14,6 +14,7 @@
 import { createHash } from 'node:crypto'
 import type {
   ProgrammeManifest,
+  RevocationList,
   TranscriptV1Payload,
   TranscriptV2Payload,
 } from './types.ts'
@@ -137,3 +138,25 @@ export function canonicalTranscriptV2(payload: TranscriptV2Payload): string {
 /** The id of a cdut/2 transcript: `cdut2-<24 hex>`, derived from the payload. */
 export const transcriptIdV2 = (payload: TranscriptV2Payload): string =>
   `cdut2-${contentHash(canonicalTranscriptV2(payload)).slice(0, 24)}`
+
+/**
+ * The canonical bytes of a revocation list.
+ *
+ * Entries are sorted by transcript id, so the order a registrar writes them in
+ * does not change the signature.
+ */
+export function canonicalRevocationList(list: RevocationList): string {
+  return JSON.stringify({
+    issuer: list.issuer,
+    publishedAt: list.publishedAt,
+    entries: [...list.entries]
+      .sort((a, b) =>
+        a.transcriptId < b.transcriptId ? -1 : a.transcriptId > b.transcriptId ? 1 : 0,
+      )
+      .map((entry) => ({
+        transcriptId: entry.transcriptId,
+        revokedAt: entry.revokedAt,
+        reason: entry.reason,
+      })),
+  })
+}

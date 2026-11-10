@@ -7,6 +7,7 @@
 export * from './types.ts'
 export {
   canonicalManifest,
+  canonicalRevocationList,
   canonicalTranscriptV1,
   canonicalTranscriptV2,
   contentHash,
@@ -41,3 +42,14 @@ export {
   verifyTranscriptV2,
 } from './transcript.ts'
 export type { SigningKeys } from './transcript.ts'
+export { validateManifest } from './manifest.ts'
+export { validatePayload } from './payload.ts'
+export { verifyReport } from './verdict.ts'
+export type { VerdictOptions } from './verdict.ts'
+export {
+  checkRevocation,
+  issueRevocationList,
+  verifyRevocationList,
+  verifyWithKeySet,
+} from './revocation.ts'
+export type { RevocationInput } from './revocation.ts'

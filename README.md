@@ -33,9 +33,9 @@ public key. Completeness checking additionally needs the published manifest.
 
 ```sh
 bun install
-bun test                      # baseline + task
-bun test test/transcript.test.ts   # baseline only: 13 pass
-bun test test/completeness.test.ts # the task: 12 fail until implemented
+bun test                      # baseline + all task suites
+bun test:baseline             # 13 pass — the verifier that already works
+bun test:task                 # 73 fail — the work
 bun run typecheck
 ```
 
@@ -50,10 +50,19 @@ incomplete, `2` usage or parse error.
 
 ## The task
 
-`verifyCompleteness` in `src/transcript.ts` is deliberately a stub. The failing
-suite in `test/completeness.test.ts` is the specification, and
-[TASK.md](TASK.md) writes the contract out in prose. Implement the function until
-the suite passes.
+Five suites are failing on purpose. They are the specification:
+
+| Suite | Workstream | Tests |
+|---|---|---|
+| `test/completeness.test.ts` | programme completeness | 12 |
+| `test/manifest.test.ts` | manifest integrity | 18 |
+| `test/payload.test.ts` | payload integrity | 19 |
+| `test/verdict.test.ts` | structured verdicts | 13 |
+| `test/revocation.test.ts` | revocation and key rotation | 11 |
+
+[TASK.md](TASK.md) writes the contracts out in prose. [BACKLOG.md](BACKLOG.md)
+puts them in order with a 50-hour estimate and the two workstreams that are
+specified but not yet test-anchored.
 
 The baseline suite (`test/transcript.test.ts`) must stay green: it covers the
 canonical serialisation, content ids and signature verification.
@@ -61,13 +70,17 @@ canonical serialisation, content ids and signature verification.
 ## Layout
 
 ```
-src/types.ts       the public shapes: cdut/1, cdut/2, manifest, results
+src/types.ts       the public shapes: transcripts, manifests, verdicts, key sets
 src/canonical.ts   deterministic serialisation, content ids, manifest hash
 src/sign.ts        Ed25519 sign/verify, base64url, key ids
-src/transcript.ts  issue and verify transcripts; verifyCompleteness (the task)
+src/transcript.ts  issue and verify transcripts; verifyCompleteness (workstream A)
+src/manifest.ts    validateManifest (workstream B)
+src/payload.ts     validatePayload (workstream C)
+src/verdict.ts     verifyReport (workstream D)
+src/revocation.ts  revocation lists and key rotation (workstream E)
 src/index.ts       public API
 src/cli.ts         command-line verifier
-test/              baseline suite + the failing task suite
+test/              one baseline suite and five failing task suites
 ```
 
 ## Dependencies

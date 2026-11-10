@@ -166,6 +166,155 @@ export interface PrerequisiteViolation {
   missingPrerequisite: string
 }
 
+/** A machine-readable reason code. Strings are for humans; codes are for software. */
+export type ReasonCode =
+  | 'OK'
+  | 'UNSIGNED'
+  | 'SIGNATURE_INVALID'
+  | 'ID_MISMATCH'
+  | 'KEY_UNKNOWN'
+  | 'KEY_NOT_YET_VALID'
+  | 'KEY_EXPIRED'
+  | 'REVOKED'
+  | 'FORMAT_UNKNOWN'
+  | 'PROGRAMME_ID_MISMATCH'
+  | 'PROGRAMME_VERSION_MISMATCH'
+  | 'MANIFEST_HASH_MISMATCH'
+  | 'MANIFEST_INVALID'
+  | 'PAYLOAD_INVALID'
+  | 'NOT_PROVABLE'
+  | 'MODULE_MISSING'
+  | 'MODULE_EXTRA'
+  | 'CREDITS_SHORT'
+  | 'PREREQUISITE_ORDER'
+
+/** One issue in a structured verdict. */
+export interface VerdictIssue {
+  code: ReasonCode
+  message: string
+  moduleId?: string
+}
+
+/**
+ * The structured verdict a verifier returns.
+ *
+ * `valid` is about the file: id, signature and (when supplied) key set.
+ * `provable` is about completeness: it is false when no manifest was supplied,
+ * when the transcript is cdut/1, or when the transcript commits to a different
+ * manifest. `complete` is true only when the programme is provably complete.
+ */
+export interface VerdictReport {
+  transcriptId: string
+  format: 'cdut/1' | 'cdut/2' | 'unknown'
+  valid: boolean
+  provable: boolean
+  complete: boolean
+  /** Sorted, de-duplicated. `OK` is present when the transcript is genuine. */
+  codes: ReasonCode[]
+  issues: VerdictIssue[]
+}
+
+/** Why a manifest is not publishable. */
+export type ManifestIssueCode =
+  | 'MANIFEST_ID_EMPTY'
+  | 'MANIFEST_TITLE_EMPTY'
+  | 'MANIFEST_VERSION_EMPTY'
+  | 'MANIFEST_NQF_OUT_OF_RANGE'
+  | 'MANIFEST_TOTAL_CREDITS_INVALID'
+  | 'MANIFEST_PASS_MARK_INVALID'
+  | 'MANIFEST_NO_MODULES'
+  | 'MODULE_ID_EMPTY'
+  | 'MODULE_ID_DUPLICATE'
+  | 'MODULE_TITLE_EMPTY'
+  | 'MODULE_CREDITS_INVALID'
+  | 'MODULE_PREREQUISITE_UNKNOWN'
+  | 'MODULE_PREREQUISITE_SELF'
+  | 'MODULE_PREREQUISITE_CYCLE'
+  | 'MANIFEST_CREDITS_UNSATISFIABLE'
+
+export interface ManifestIssue {
+  code: ManifestIssueCode
+  message: string
+  moduleId?: string
+}
+
+/** The result of checking that a manifest is internally coherent. */
+export interface ManifestValidation {
+  valid: boolean
+  /** Deterministic order: by code, then moduleId, then message. */
+  issues: ManifestIssue[]
+}
+
+/** Why a transcript payload is malformed. */
+export type PayloadIssueCode =
+  | 'TRANSCRIPT_ID_MISMATCH'
+  | 'TRANSCRIPT_FORMAT_UNKNOWN'
+  | 'HOLDER_NAME_EMPTY'
+  | 'ISSUED_AT_INVALID'
+  | 'PROGRAMME_ID_EMPTY'
+  | 'PROGRAMME_VERSION_EMPTY'
+  | 'MANIFEST_HASH_INVALID'
+  | 'MODULE_ID_EMPTY'
+  | 'MODULE_CREDITS_INVALID'
+  | 'MODULE_MARK_OUT_OF_RANGE'
+  | 'MODULE_PASSED_AT_INVALID'
+  | 'PAN_EMPTY'
+  | 'AGENT_NAME_EMPTY'
+  | 'ENROLMENT_SLOT_INVALID'
+  | 'ASSESSMENT_ATTEMPT_INVALID'
+  | 'ASSESSMENT_DATE_INVALID'
+
+export interface PayloadIssue {
+  code: PayloadIssueCode
+  message: string
+  moduleId?: string
+}
+
+/** The result of checking a transcript payload's own fields. */
+export interface PayloadValidation {
+  valid: boolean
+  /** Deterministic order: by code, then moduleId, then message. */
+  issues: PayloadIssue[]
+}
+
+/** One revoked transcript. Revocation is by transcript id, not by holder. */
+export interface RevocationEntry {
+  transcriptId: string
+  revokedAt: string
+  reason: string
+}
+
+/**
+ * A signed revocation list. The registrar publishes it; a verifier checks the
+ * signature before believing a transcript is revoked.
+ */
+export interface RevocationList {
+  issuer: string
+  publishedAt: string
+  entries: RevocationEntry[]
+  proof: Proof | null
+}
+
+/** One key in a published key set. Windows are inclusive. */
+export interface KeySetEntry {
+  kid: string
+  publicKey: string
+  notBefore: string
+  notAfter: string
+}
+
+/** A published key set, used to verify transcripts across key rotation. */
+export interface KeySet {
+  issuer: string
+  keys: KeySetEntry[]
+}
+
+/** The result of checking a signature over a non-transcript document. */
+export interface DocumentVerification {
+  valid: boolean
+  reasons: string[]
+}
+
 /** The result of checking a transcript against a programme manifest. */
 export interface CompletenessResult {
   /**
