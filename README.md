@@ -11,6 +11,12 @@ needs in order to trust a transcript without trusting the university's servers.
 Licensed under the [Apache License 2.0](LICENSE). Copyright 2026 Muzi Dlamini,
 creator of the `.cdut` specification.
 
+## Provenance and licence scope
+
+This repository is a slice of a private university codebase. The university code
+is not here, and Apache-2.0 applies to this repository only. [PROVENANCE.md](PROVENANCE.md)
+records the source, the extraction, and the checks that show the separation.
+
 ## What a `.cdut` file proves
 
 A transcript is a JSON document with an Ed25519 signature over its canonical
