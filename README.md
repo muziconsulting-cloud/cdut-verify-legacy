@@ -8,7 +8,8 @@ university itself — its curriculum, its registrar, its student records — is
 proprietary and is not in this repository. What is here is the part a third party
 needs in order to trust a transcript without trusting the university's servers.
 
-Licensed under the [Apache License 2.0](LICENSE).
+Licensed under the [Apache License 2.0](LICENSE). Copyright 2026 Muzi Dlamini,
+creator of the `.cdut` specification.
 
 ## What a `.cdut` file proves
 

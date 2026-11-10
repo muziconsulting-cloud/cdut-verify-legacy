@@ -4,6 +4,7 @@
   "description": "Offline verifier for CDU .cdut transcripts, with programme-manifest completeness checking",
   "type": "module",
   "license": "Apache-2.0",
+  "author": "Muzi Dlamini",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/muziconsulting-cloud/cdut-verify.git"
