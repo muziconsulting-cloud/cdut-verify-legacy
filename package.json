@@ -4,6 +4,12 @@
   "description": "Offline verifier for CDU .cdut transcripts, with programme-manifest completeness checking",
   "type": "module",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muziconsulting-cloud/cdut-verify.git"
+  },
+  "homepage": "https://github.com/muziconsulting-cloud/cdut-verify#readme",
+  "keywords": ["transcript", "verification", "ed25519", "education", "cdut"],
   "bin": {
     "cdut-verify": "./src/cli.ts"
   },
